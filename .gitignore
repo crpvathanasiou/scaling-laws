@@ -1,0 +1,15 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+artifacts/
+results/runs/
+reports/figures/
+
+.ipynb_checkpoints/
+.DS_Store
+
+notes/

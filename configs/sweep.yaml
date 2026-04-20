@@ -1,0 +1,9 @@
+models:
+  - configs/model_1m.yaml
+  - configs/model_5m.yaml
+  - configs/model_20m.yaml
+
+token_budgets:
+  - 2000000
+  - 20000000
+  - 50000000

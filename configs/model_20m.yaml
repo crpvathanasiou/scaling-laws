@@ -1,0 +1,6 @@
+model_name: model_20m
+vocab_size: 8000
+context_length: 128
+n_layer: 10
+n_head: 8
+n_embd: 384

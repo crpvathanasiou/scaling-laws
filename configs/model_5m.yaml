@@ -1,0 +1,6 @@
+model_name: model_5m
+vocab_size: 8000
+context_length: 128
+n_layer: 8
+n_head: 4
+n_embd: 256
