@@ -425,3 +425,4 @@ foreach ($RelativePath in $Files.Keys) {
 Write-Host ""
 Write-Host "Project scaffold check complete."
 Write-Host "Nothing existing was overwritten."
+

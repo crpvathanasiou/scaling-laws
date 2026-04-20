@@ -8,13 +8,15 @@ dependencies = [
   "datasets>=2.19.0",
   "transformers>=4.41.0",
   "tokenizers>=0.15.2",
-  "torch>=2.2.0",
+  "torch (==2.5.1+cu121)",
   "numpy>=1.26.0",
   "pandas>=2.2.0",
   "matplotlib>=3.8.0",
   "scikit-learn>=1.4.0",
   "pyyaml>=6.0.1",
-  "tqdm>=4.66.0"
+  "tqdm>=4.66.0",
+  "torchvision (==0.20.1+cu121)",
+  "torchaudio (==2.5.1+cu121)"
 ]
 
 [build-system]
@@ -26,3 +28,13 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu121"
+priority = "explicit"
+
+
+[tool.poetry.dependencies]
+torchvision = {source = "pytorch"}
+torchaudio = {source = "pytorch"}
+torch = {source = "pytorch"}
