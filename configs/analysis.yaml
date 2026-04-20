@@ -1,0 +1,4 @@
+﻿results_csv: results/results.csv
+plots_dir: reports/figures
+scaling_fit_json: results/scaling_fits.json
+frontier_csv: results/compute_frontier.csv

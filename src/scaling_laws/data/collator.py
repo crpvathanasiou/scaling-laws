@@ -1,0 +1,2 @@
+﻿class CausalLMCollator:
+    pass
