@@ -1,6 +1,4 @@
 model_configs:
-  - configs/model_small.yaml
-  - configs/model_medium.yaml
   - configs/model_large.yaml
 
 token_budgets:

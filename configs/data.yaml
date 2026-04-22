@@ -1,4 +1,12 @@
+dataset_name: alexliap/tinystories-gr
+text_column: greek_translation
+
 context_length: 128
 train_split_name: train
 val_fraction: 0.01
 seed: 42
+
+tokenizer_path: artifacts/tokenizer/final_vocab_8000/tokenizer.json
+
+max_train_texts: 
+max_val_texts: 

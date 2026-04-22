@@ -4,3 +4,7 @@ context_length: 128
 n_layer: 10
 n_head: 8
 n_embd: 384
+mlp_ratio: 4.0
+dropout: 0.1
+bias: true
+tie_embeddings: true
