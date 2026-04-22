@@ -9,7 +9,8 @@ from datasets import load_dataset
 from tokenizers import Tokenizer, models, trainers, pre_tokenizers, normalizers, processors
 
 
-# Special tokens used consistently across all tokenizer runs.
+# Special tokens shared across all tokenizer runs.
+# These are kept fixed so the same tokenizer behavior is reused in every experiment.
 SPECIAL_TOKENS = ["[PAD]", "[UNK]", "[BOS]", "[EOS]"]
 
 
@@ -20,9 +21,11 @@ def set_seed(seed: int):
 
 def clean_text(text):
     """
-    Basic text cleaning:
+    Apply basic text cleaning.
+
+    Rules:
     - keep only string values
-    - strip surrounding whitespace
+    - strip leading/trailing whitespace
     - drop empty strings
     """
     if not isinstance(text, str):
@@ -42,6 +45,10 @@ def load_and_split_dataset(
     """
     Load the Hugging Face dataset, keep only valid text rows,
     shuffle them, and split them into train/validation sets.
+
+    Important:
+    - the tokenizer will later be trained only on the training split
+    - the validation split is kept for reproducibility metadata
     """
     ds = load_dataset(dataset_name, split="train")
     ds = ds.shuffle(seed=seed)
@@ -57,13 +64,18 @@ def load_and_split_dataset(
     n_train = n_total - n_val
 
     train_texts = filtered_texts[:n_train]
-    val_texts = filtered_texts[n_train:]
+    validation_texts = filtered_texts[n_train:]
 
-    return train_texts, val_texts
+    return train_texts, validation_texts
 
 
 def yield_texts(texts):
-    """Yield texts one by one for tokenizer training from an iterator."""
+    """
+    Yield texts one by one.
+
+    The tokenizers library can train from an iterator, so this avoids
+    having to write temporary training files to disk.
+    """
     for t in texts:
         yield t
 
@@ -76,6 +88,7 @@ def build_tokenizer(vocab_size: int, min_frequency: int):
     - BPE model with [UNK] token
     - NFKC Unicode normalization
     - whitespace pre-tokenization
+    - fixed special tokens
     """
     tokenizer = Tokenizer(models.BPE(unk_token="[UNK]"))
 
@@ -94,10 +107,12 @@ def build_tokenizer(vocab_size: int, min_frequency: int):
 
 def add_special_token_postprocessor(tokenizer: Tokenizer):
     """
-    Add a post-processor so that every encoded sequence receives:
-    [BOS] ... [EOS]
+    Add a post-processor so each encoded sequence becomes:
 
-    This is useful for causal language modeling experiments.
+        [BOS] tokens... [EOS]
+
+    This is useful for causal language modeling, where explicit sequence
+    boundaries are often helpful.
     """
     bos_id = tokenizer.token_to_id("[BOS]")
     eos_id = tokenizer.token_to_id("[EOS]")
@@ -117,7 +132,8 @@ def compute_fertility(tokenizer: Tokenizer, texts, sample_size: int):
     """
     Compute fertility = average number of subword tokens per whitespace word.
 
-    Lower fertility usually means less word fragmentation.
+    Lower fertility means less fragmentation:
+    fewer tokenizer pieces are needed per word on average.
     """
     total_words = 0
     total_tokens = 0
@@ -144,7 +160,8 @@ def compute_active_vocab_ratio(
     Compute the fraction of vocabulary items that appear at least
     `min_occurrences` times in the sampled texts.
 
-    This is a simple proxy for vocabulary utilization.
+    This is a rough proxy for vocabulary utilization:
+    a lower value suggests that more learned vocabulary entries are sparse.
     """
     token_counts = Counter()
 
@@ -165,13 +182,13 @@ def estimate_embedding_share(
     tied_embeddings: bool = True,
 ):
     """
-    Estimate the fraction of model parameters used by token embeddings.
+    Estimate the fraction of parameters used by token embeddings.
 
-    If embeddings are tied, embedding parameters are approximately:
-        vocab_size * d_model
+    Approximation:
+    - tied embeddings:  vocab_size * d_model
+    - untied embeddings: 2 * vocab_size * d_model
 
-    If untied, we approximate:
-        2 * vocab_size * d_model
+    This is used only as a diagnostic for the small-model regime.
     """
     emb_params = vocab_size * d_model
     if not tied_embeddings:
@@ -190,8 +207,9 @@ def profile_candidate(
     tied_embeddings: bool,
 ):
     """
-    Train a temporary tokenizer for a given vocabulary size and compute
-    profiling metrics used to choose the final vocabulary:
+    Train a temporary tokenizer for one candidate vocabulary size and compute
+    the profiling metrics used for vocabulary selection:
+
     - fertility
     - active vocabulary ratio
     - embedding share
@@ -244,7 +262,11 @@ def ensure_dir(path: str):
 
 
 def save_special_tokens_map(tokenizer: Tokenizer, output_dir: str):
-    """Save a simple special tokens map for downstream reuse."""
+    """
+    Save a lightweight mapping of special tokens and their ids.
+
+    This is useful later when loading the tokenizer into downstream code.
+    """
     special_tokens_map = {
         "pad_token": "[PAD]",
         "unk_token": "[UNK]",
@@ -262,8 +284,8 @@ def count_token_frequencies(tokenizer: Tokenizer, texts, sample_size: int):
     """
     Count token frequencies on a sample of texts.
 
-    Special tokens are excluded so the histogram reflects corpus token usage
-    rather than BOS/EOS template insertion.
+    Special tokens are excluded so the histogram reflects actual corpus usage
+    rather than artificial BOS/EOS insertion from the post-processor.
     """
     special_ids = {
         tokenizer.token_to_id("[PAD]"),
@@ -283,7 +305,10 @@ def count_token_frequencies(tokenizer: Tokenizer, texts, sample_size: int):
 
 def plot_token_frequency_histogram(token_counts: Counter, output_path: str):
     """
-    Plot a histogram of token frequencies across the sampled corpus.
+    Plot a histogram of token frequencies.
+
+    Both axes are shown on a log scale because token frequencies in language
+    typically follow a heavy-tailed / long-tail distribution.
     """
     if not token_counts:
         return
@@ -306,7 +331,11 @@ def plot_token_frequency_histogram(token_counts: Counter, output_path: str):
 
 def plot_profile_metric(rows, metric_key: str, ylabel: str, title: str, output_path: str):
     """
-    Plot a profiling metric against vocabulary size.
+    Plot one profiling metric as a function of vocabulary size.
+
+    Examples:
+    - fertility vs vocabulary size
+    - embedding share vs vocabulary size
     """
     if not rows:
         return
@@ -336,6 +365,7 @@ def train_final_tokenizer(
 ):
     """
     Train the final tokenizer on the full training split and save:
+
     - tokenizer.json
     - tokenizer_config.json
     - vocab.txt
@@ -350,6 +380,7 @@ def train_final_tokenizer(
     tokenizer_json_path = os.path.join(output_dir, "tokenizer.json")
     tokenizer.save(tokenizer_json_path)
 
+    # Save a lightweight tokenizer config for reproducibility and inspection.
     config = {
         "vocab_size": tokenizer.get_vocab_size(),
         "special_tokens": SPECIAL_TOKENS,
@@ -367,7 +398,7 @@ def train_final_tokenizer(
     save_json(config, os.path.join(output_dir, "tokenizer_config.json"))
     save_special_tokens_map(tokenizer, output_dir)
 
-    # Save the learned vocabulary in token-id order for inspection/debugging.
+    # Save the learned vocabulary in token-id order for easy inspection/debugging.
     vocab = tokenizer.get_vocab()
     vocab_sorted = sorted(vocab.items(), key=lambda x: x[1])
     with open(os.path.join(output_dir, "vocab.txt"), "w", encoding="utf-8") as f:
@@ -412,26 +443,27 @@ def main():
     set_seed(args.seed)
     ensure_dir(args.artifacts_dir)
 
-    # Load and split the dataset once. The tokenizer is trained only on train_texts.
-    train_texts, val_texts = load_and_split_dataset(
+    # Load and split the dataset once.
+    # The tokenizer itself is trained only on train_texts.
+    train_texts, validation_texts = load_and_split_dataset(
         dataset_name=args.dataset_name,
         text_column=args.text_column,
         val_size=args.val_size,
         seed=args.seed,
     )
 
-    # Save split metadata for reproducibility.
+    # Save split metadata for reproducibility and documentation.
     split_meta = {
         "dataset_name": args.dataset_name,
         "text_column": args.text_column,
         "seed": args.seed,
         "val_size": args.val_size,
         "n_train_texts": len(train_texts),
-        "n_val_texts": len(val_texts),
+        "n_val_texts": len(validation_texts),
     }
     save_json(split_meta, os.path.join(args.artifacts_dir, "data_split_metadata.json"))
 
-    # Use a smaller subset for quick vocabulary profiling.
+    # Use smaller subsets for quick vocabulary profiling.
     profile_train_texts = train_texts[:args.profile_train_subset]
     profile_eval_texts = train_texts[:args.profile_eval_subset]
 
@@ -464,10 +496,11 @@ def main():
                 f"{metrics['active_vocab_ratio']:18.4f}"
             )
 
-        # Save profiling outputs for later analysis and report writing.
+        # Save profiling outputs for later inspection and report writing.
         save_profile_csv(profile_rows, os.path.join(args.artifacts_dir, "tokenizer_profile.csv"))
         save_json(profile_rows, os.path.join(args.artifacts_dir, "tokenizer_profile.json"))
 
+        # Plot the most important profiling diagnostics.
         plot_profile_metric(
             rows=profile_rows,
             metric_key="fertility",
@@ -479,7 +512,7 @@ def main():
         plot_profile_metric(
             rows=profile_rows,
             metric_key="embedding_share",
-            ylabel="Embedding share",
+            ylabel="Embedding share (fraction of assumed small-model params)",
             title="Embedding Share vs Vocabulary Size",
             output_path=os.path.join(plots_dir, "embedding_share_vs_vocab_size.png"),
         )
@@ -501,7 +534,7 @@ def main():
             metadata=metadata,
         )
 
-        # Save one encoded example for quick sanity checking.
+        # Save one encoded example for a quick sanity check.
         sample_text = train_texts[0]
         enc = tokenizer.encode(sample_text)
 
@@ -513,6 +546,7 @@ def main():
         }
         save_json(preview, os.path.join(final_dir, "tokenizer_preview.json"))
 
+        # Count token usage on a sample of the training data and plot the frequency histogram.
         token_counts = count_token_frequencies(
             tokenizer=tokenizer,
             texts=train_texts,
