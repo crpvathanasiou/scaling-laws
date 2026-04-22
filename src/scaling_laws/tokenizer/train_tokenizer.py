@@ -281,7 +281,7 @@ def count_token_frequencies(tokenizer: Tokenizer, texts, sample_size: int):
     return counts
 
 
-def plot_token_frequency_histogram(token_counts: Counter, tokenizer: Tokenizer, output_path: str):
+def plot_token_frequency_histogram(token_counts: Counter, output_path: str):
     """
     Plot a histogram of token frequencies across the sampled corpus.
     """
@@ -520,7 +520,6 @@ def main():
         )
         plot_token_frequency_histogram(
             token_counts=token_counts,
-            tokenizer=tokenizer,
             output_path=os.path.join(plots_dir, "token_frequency_histogram.png"),
         )
 

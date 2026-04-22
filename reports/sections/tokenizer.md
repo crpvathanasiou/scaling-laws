@@ -10,7 +10,7 @@ The vocabulary size was selected through a small empirical profiling sweep rathe
    If the vocabulary is too small, Greek words are fragmented into too many subword units, increasing sequence length and reducing the amount of semantic content that fits into a fixed context window.
 
 2. **Parameter efficiency in small models**  
-   In the tiny-model regime, the token embedding table can consume a non-trivial fraction of the total parameter budget. This is especially relevant for the smallest model in the sweep.
+   In the tiny-model regime, the token embedding table can consume a non-trivial fraction of the total parameter budget. This is especially relevant for the small model configuration.
 
 3. **Vocabulary utilization**  
    Since TinyStories-GR is a domain-constrained corpus with relatively simple language, an excessively large vocabulary risks allocating parameters to sparse or rarely updated tokens.

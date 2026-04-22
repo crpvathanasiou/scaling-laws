@@ -24,4 +24,8 @@ python .\src\scaling_laws\tokenizer\train_tokenizer.py `
   --token_histogram_sample_size 5000 `
   --artifacts_dir "artifacts/tokenizer"
 
+if ($LASTEXITCODE -ne 0) {
+  throw "Tokenizer run failed."
+}
+
 Write-Host "Tokenizer run completed."
