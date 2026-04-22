@@ -7,12 +7,24 @@ from collections import Counter
 import matplotlib.pyplot as plt
 from datasets import load_dataset
 from tokenizers import Tokenizer, models, trainers, pre_tokenizers, normalizers, processors
+import yaml
 
 
 # Special tokens shared across all tokenizer runs.
 # These are kept fixed so the same tokenizer behavior is reused in every experiment.
 SPECIAL_TOKENS = ["[PAD]", "[UNK]", "[BOS]", "[EOS]"]
 
+def load_yaml_config(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return data or {}
+
+def apply_config_defaults(parser: argparse.ArgumentParser, config: dict):
+    """
+    Override argparse defaults with values loaded from YAML config.
+    CLI flags still take precedence over config values.
+    """
+    parser.set_defaults(**config)
 
 def set_seed(seed: int):
     """Set Python's random seed for reproducibility."""
@@ -417,7 +429,18 @@ def main():
     - final: train and save the final tokenizer only
     - both: run profiling first, then train the final tokenizer
     """
-    parser = argparse.ArgumentParser()
+
+    # First parser: only read --config
+    config_parser = argparse.ArgumentParser(add_help=False)
+    config_parser.add_argument("--config", type=str, default=None)
+    config_args, remaining_argv = config_parser.parse_known_args()
+
+    config = {}
+    if config_args.config is not None:
+        config = load_yaml_config(config_args.config)
+
+    # Main parser
+    parser = argparse.ArgumentParser(parents=[config_parser])
     parser.add_argument("--dataset_name", type=str, default="alexliap/tinystories-gr")
     parser.add_argument("--text_column", type=str, default="greek_translation")
     parser.add_argument("--val_size", type=float, default=0.01)
@@ -436,9 +459,10 @@ def main():
     parser.add_argument("--tied_embeddings", action="store_true")
 
     parser.add_argument("--token_histogram_sample_size", type=int, default=5000)
-
     parser.add_argument("--artifacts_dir", type=str, default="artifacts/tokenizer")
-    args = parser.parse_args()
+
+    apply_config_defaults(parser, config)
+    args = parser.parse_args(remaining_argv)
 
     set_seed(args.seed)
     ensure_dir(args.artifacts_dir)
