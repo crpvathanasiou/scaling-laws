@@ -13,10 +13,6 @@ The project uses a single Greek-only BPE tokenizer trained from scratch on the `
 
 ### Run tokenizer profiling + final tokenizer training
 
-Ορίστε το κείμενο ακριβώς όπως το θέλεις, διορθωμένο και έτοιμο για copy-paste, χωρίς να "σπάει" το Markdown:
-
-### Run tokenizer profiling + final tokenizer training
-
 On Windows PowerShell:
 
 ```powershell
