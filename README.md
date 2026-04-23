@@ -1,6 +1,3 @@
-Βάλε αυτό **αντί για το τωρινό** `README.md`:
-
-````markdown
 # Scaling Laws for a Small Greek Language Model
 
 This repository contains a complete experimental pipeline for deriving empirical scaling laws for a small Greek-language causal language model trained from scratch.
