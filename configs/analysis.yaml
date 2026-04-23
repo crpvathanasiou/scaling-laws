@@ -1,4 +1,18 @@
 ﻿results_csv: results/results.csv
-plots_dir: reports/figures
-scaling_fit_json: results/scaling_fits.json
-frontier_csv: results/compute_frontier.csv
+output_dir: artifacts/analysis
+
+run_name_prefix: model_
+
+plots:
+  loss_vs_params: loss_vs_params.png
+  loss_vs_tokens: loss_vs_tokens.png
+  loss_vs_flops: loss_vs_flops.png
+  compute_frontier: compute_frontier.png
+
+outputs:
+  cleaned_results_csv: cleaned_results.csv
+  scaling_fits_json: scaling_fits.json
+  analysis_summary_json: analysis_summary.json
+  compute_frontier_csv: compute_frontier.csv
+  compute_frontier_json: compute_frontier.json
+
