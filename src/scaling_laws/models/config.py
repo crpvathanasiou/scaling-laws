@@ -1,2 +1,0 @@
-﻿class ModelConfig:
-    pass

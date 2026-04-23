@@ -2,7 +2,7 @@ model_name: model_5m
 vocab_size: 8000
 context_length: 128
 n_layer: 6
-n_head: 6
+n_head: 8
 n_embd: 224
 mlp_ratio: 4.0
 dropout: 0.1
