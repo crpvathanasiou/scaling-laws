@@ -1,12 +1,5 @@
 # RUNBOOK
 
-Βάλε αυτό ως:
-
-`RUNBOOK.md`
-
-````markdown
-# RUNBOOK
-
 Operational guide for running the Greek scaling-laws pipeline end-to-end.
 
 ---
