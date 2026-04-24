@@ -1,4 +1,3 @@
-````md
 # RUNBOOK
 
 Operational guide for running the Greek scaling-laws pipeline end-to-end.
