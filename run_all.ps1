@@ -5,7 +5,8 @@
     [switch]$SkipDataPrep,
     [switch]$SkipSweep,
     [switch]$SkipScalingFits,
-    [switch]$SkipFrontier
+    [switch]$SkipFrontier,
+    [switch]$SkipTrainingCurves
 )
 
 $ErrorActionPreference = "Stop"
