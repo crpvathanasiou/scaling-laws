@@ -545,7 +545,7 @@ The compute frontier reported in this work is an **empirical frontier over the o
 
 The experiments were executed under practical hardware constraints on a single NVIDIA RTX 3060 (12GB VRAM). Approximate sweep runtimes were:
 
-- **small model sweep:** ~8-9 minutes
+- **small model sweep:** ~7-8 minutes
 - **medium model sweep:** ~25–30 minutes
 - **large model sweep:** ~50–60 minutes
 
