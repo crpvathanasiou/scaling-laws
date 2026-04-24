@@ -8,6 +8,7 @@ SKIP_DATA_PREP="${SKIP_DATA_PREP:-0}"
 SKIP_SWEEP="${SKIP_SWEEP:-0}"
 SKIP_SCALING_FITS="${SKIP_SCALING_FITS:-0}"
 SKIP_FRONTIER="${SKIP_FRONTIER:-0}"
+SKIP_TRAINING_CURVES="${SKIP_TRAINING_CURVES:-0}"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$REPO_ROOT"
@@ -21,56 +22,66 @@ echo "SKIP_SWEEP: $SKIP_SWEEP"
 echo "SKIP_SCALING_FITS: $SKIP_SCALING_FITS"
 echo "SKIP_FRONTIER: $SKIP_FRONTIER"
 echo "Working directory: $REPO_ROOT"
+echo "SKIP_TRAINING_CURVES: $SKIP_TRAINING_CURVES"
 echo "========================================"
 
 if [ "$SKIP_TOKENIZER" = "0" ]; then
   echo
-  echo "[1/5] START Tokenizer"
+  echo "[1/6] START Tokenizer"
   bash ./scripts/01_tokenizer.sh
-  echo "[1/5] DONE Tokenizer"
+  echo "[1/6] DONE Tokenizer"
 else
   echo
-  echo "[1/5] SKIP Tokenizer"
+  echo "[1/6] SKIP Tokenizer"
 fi
 
 if [ "$SKIP_DATA_PREP" = "0" ]; then
   echo
-  echo "[2/5] START Data preparation"
+  echo "[2/6] START Data preparation"
   bash ./scripts/02_prepare_data.sh
-  echo "[2/5] DONE Data preparation"
+  echo "[2/6] DONE Data preparation"
 else
   echo
-  echo "[2/5] SKIP Data preparation"
+  echo "[2/6] SKIP Data preparation"
 fi
 
 if [ "$SKIP_SWEEP" = "0" ]; then
   echo
-  echo "[3/5] START Sweep ($MODE)"
+  echo "[3/6] START Sweep ($MODE)"
   bash ./scripts/05_run_sweep.sh "$MODE"
-  echo "[3/5] DONE Sweep ($MODE)"
+  echo "[3/6] DONE Sweep ($MODE)"
 else
   echo
-  echo "[3/5] SKIP Sweep"
+  echo "[3/6] SKIP Sweep"
 fi
 
 if [ "$SKIP_SCALING_FITS" = "0" ]; then
   echo
-  echo "[4/5] START Scaling-law fitting"
+  echo "[4/6] START Scaling-law fitting"
   bash ./scripts/06_fit_scaling_laws.sh
-  echo "[4/5] DONE Scaling-law fitting"
+  echo "[4/6] DONE Scaling-law fitting"
 else
   echo
-  echo "[4/5] SKIP Scaling-law fitting"
+  echo "[4/6] SKIP Scaling-law fitting"
 fi
 
 if [ "$SKIP_FRONTIER" = "0" ]; then
   echo
-  echo "[5/5] START Compute frontier"
+  echo "[5/6] START Compute frontier"
   bash ./scripts/07_compute_frontier.sh
-  echo "[5/5] DONE Compute frontier"
+  echo "[5/6] DONE Compute frontier"
 else
   echo
-  echo "[5/5] SKIP Compute frontier"
+  echo "[5/6] SKIP Compute frontier"
+fi
+if [ "$SKIP_TRAINING_CURVES" = "0" ]; then
+  echo
+  echo "[6/6] START Training-curve plotting"
+  bash ./scripts/08_plot_training_curves.sh
+  echo "[6/6] DONE Training-curve plotting"
+else
+  echo
+  echo "[6/6] SKIP Training-curve plotting"
 fi
 
 echo

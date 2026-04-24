@@ -1,3 +1,4 @@
+````md
 # Scaling Laws for a Small Greek Language Model
 
 This repository contains a complete experimental pipeline for deriving empirical scaling laws for a small Greek-language causal language model trained from scratch.
@@ -11,6 +12,7 @@ The pipeline covers:
 - collecting results into a unified results table
 - fitting simple power-law trends
 - computing an empirical compute-optimal frontier
+- generating per-run and combined training-curve figures
 - producing figures and report assets for the final assignment
 
 ---
@@ -29,6 +31,7 @@ The project is designed around the take-home assignment requirement to:
 - fit empirical scaling laws
 - identify the compute-optimal frontier
 
+
 ---
 
 ## Repository structure
@@ -37,9 +40,9 @@ The project is designed around the take-home assignment requirement to:
 configs/         # YAML configs for tokenizer, data prep, models, training, sweep, analysis
 scripts/         # PowerShell and bash entrypoints for each pipeline stage
 src/             # Python source code
-results/         # final aggregated CSV results
-reports/         # report assets, figures, tables, PDF
-artifacts/       # generated runtime outputs (tokenizer, data, runs, analysis)
+results/         # aggregated experiment results
+reports/         # report source, report assets, figures, tables, PDF
+artifacts/       # generated runtime/local outputs (tokenizer, data, runs, analysis)
 RUNBOOK.md       # operational step-by-step execution guide
 README.md        # project overview
 ````
@@ -209,6 +212,12 @@ A single standardized experiment can also be launched through:
 .\scripts\04_run_single_experiment.ps1
 ```
 
+#### Bash
+
+```bash
+bash scripts/04_run_single_experiment.sh
+```
+
 This stage is useful to validate:
 
 * token-budget-to-max-steps conversion
@@ -354,6 +363,34 @@ Main outputs:
 
 ---
 
+## Training curves
+
+Training-curve figures are generated from the per-run `train_loss_curve.csv` files after the sweep is complete.
+
+### Run training-curve plotting
+
+#### Windows PowerShell
+
+```powershell
+.\scripts\08_plot_training_curves.ps1
+```
+
+#### Bash
+
+```bash
+bash scripts/08_plot_training_curves.sh
+```
+
+### Training-curve outputs
+
+Generated under:
+
+* `reports/figures/training_curves/`
+* `reports/figures/all_training_curves.png`
+* `reports/tables/training_curves_summary.csv`
+
+---
+
 ## Recommended execution order
 
 ```powershell
@@ -368,6 +405,7 @@ Main outputs:
 
 .\scripts\06_fit_scaling_laws.ps1
 .\scripts\07_compute_frontier.ps1
+.\scripts\08_plot_training_curves.ps1
 ```
 
 Notes:
@@ -383,15 +421,27 @@ A root-level pipeline script is also available.
 
 ### Run full pipeline
 
+#### Windows PowerShell
+
 ```powershell
 .\run_all.ps1 -Mode all
 ```
 
+#### Bash
+
+```bash
+bash ./run_all.sh all
+```
+
 ### Run only one sweep stage while skipping tokenizer and data prep
+
+#### Windows PowerShell
 
 ```powershell
 .\run_all.ps1 -Mode small -SkipTokenizer -SkipDataPrep
 ```
+
+The root-level pipeline script runs the main pipeline and the post-sweep analysis stages currently wired into `run_all.ps1` / `run_all.sh`.
 
 ---
 
@@ -408,6 +458,7 @@ A root-level pipeline script is also available.
 * `configs/sweep_medium.yaml`
 * `configs/sweep_large.yaml`
 * `configs/analysis.yaml`
+* `configs/training_curves.yaml`
 
 ---
 
@@ -415,15 +466,18 @@ A root-level pipeline script is also available.
 
 Core deliverables:
 
-* `results/results.csv`
-* analysis figures under `artifacts/analysis/`
-* frontier outputs under `artifacts/analysis/`
-* final report assets under `reports/`
+* `results.csv` (root-level final copy for submission)
+* `reports/report.md` (editable report source)
+* `reports/report.pdf`
+* report-ready figures under `reports/figures/`
+* report-ready tables under `reports/tables/`
 
-Report-ready copies should be placed under:
+Runtime / local reproducibility artifacts are generated under:
 
-* `reports/figures/`
-* `reports/tables/`
+* `artifacts/tokenizer/`
+* `artifacts/data/`
+* `artifacts/runs/`
+* `artifacts/analysis/`
 
 ---
 
@@ -434,7 +488,9 @@ Report-ready copies should be placed under:
 * All models are trained from random initialization.
 * Validation loss is the main metric used for scaling-law analysis.
 * The pipeline is scriptable end-to-end and does not depend on notebooks.
+* `artifacts/runs/` contains per-run local outputs such as checkpoints and run logs; these are useful for reproducibility but are not intended as core submission deliverables.
 
 ---
 
-
+```
+```
