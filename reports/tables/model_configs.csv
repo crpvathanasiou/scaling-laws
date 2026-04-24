@@ -1,0 +1,4 @@
+model_name,actual_trainable_parameters,n_layer,n_head,n_embd,context_length,mlp_ratio,dropout,tie_embeddings
+model_1m,1833728,4,4,128,128,4.0,0.1,True
+model_5m,5451264,6,8,224,128,4.0,0.1,True
+model_20m,20866560,10,8,384,128,4.0,0.1,True

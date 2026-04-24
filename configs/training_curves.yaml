@@ -1,0 +1,7 @@
+results_csv: results/results.csv
+runs_root: artifacts/runs
+run_name_prefix: model_
+
+individual_output_dir: reports/figures/training_curves
+combined_output_path: reports/figures/all_training_curves.png
+summary_output_path: reports/tables/training_curves_summary.csv
