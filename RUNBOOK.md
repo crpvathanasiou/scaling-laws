@@ -1,5 +1,3 @@
-Βάλε αυτό ως τελικό `RUNBOOK.md`:
-
 ````md
 # RUNBOOK
 
