@@ -22,6 +22,7 @@ Write-Host "SkipDataPrep: $SkipDataPrep"
 Write-Host "SkipSweep: $SkipSweep"
 Write-Host "SkipScalingFits: $SkipScalingFits"
 Write-Host "SkipFrontier: $SkipFrontier"
+Write-Host "SkipTrainingCurves: $SkipTrainingCurves"
 Write-Host "Working directory: $RepoRoot"
 Write-Host "========================================"
 
