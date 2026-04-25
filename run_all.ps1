@@ -14,6 +14,11 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $RepoRoot
 
+if (Test-Path ".\results\results.csv") {
+    Remove-Item ".\results\results.csv" -Force
+    Write-Host "Removed existing runtime file: .\results\results.csv"
+}
+
 Write-Host "========================================"
 Write-Host "Scaling Laws Pipeline"
 Write-Host "Mode: $Mode"

@@ -13,6 +13,11 @@ SKIP_TRAINING_CURVES="${SKIP_TRAINING_CURVES:-0}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$REPO_ROOT"
 
+if [ -f ./results/results.csv ]; then
+  rm -f ./results/results.csv
+  echo "Removed existing runtime file: ./results/results.csv"
+fi
+
 echo "========================================"
 echo "Scaling Laws Pipeline"
 echo "Mode: $MODE"

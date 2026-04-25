@@ -171,11 +171,17 @@ Detailed definitions of the tokenizer profiling metrics are provided in **Append
 - **Figure 1.** Fertility vs vocabulary size  
   **Figure file:** `reports/figures/fertility_vs_vocab_size.png`
 
+![Figure 1. Fertility vs vocabulary size](figures/fertility_vs_vocab_size.png)  
+
 - **Figure 2.** Embedding share vs vocabulary size  
   **Figure file:** `reports/figures/embedding_share_vs_vocab_size.png`
 
+  ![Figure 2. Embedding share vs vocabulary size](figures/embedding_share_vs_vocab_size.png)
+
 - **Figure 3.** Token frequency histogram  
   **Figure file:** `reports/figures/token_frequency_histogram.png`
+
+  ![Figure 3. Token frequency histogram](figures/token_frequency_histogram.png)
 
 ---
 
@@ -310,11 +316,17 @@ Representative curves for the three model sizes at the highest token budget are 
 - **Figure 4.** Training curve for `model_1m_tok_50000000`
   **Figure file:** `reports/figures/training_curves/model_1m_tok_50000000_train_curve.png`
 
+  ![Figure 4. Training curve for `model_1m_tok_50000000](figures/training_curves/model_1m_tok_50000000_train_curve.png)
+
 - **Figure 5.** Training curve for `model_5m_tok_50000000`
   **Figure file:** `reports/figures/training_curves/model_5m_tok_50000000_train_curve.png`
 
+  ![Figure 5. Training curve for `model_5m_tok_50000000`](figures/training_curves/model_5m_tok_50000000_train_curve.png)
+
 - **Figure 6.** Training curve for `model_20m_tok_50000000`
   **Figure file:** `reports/figures/training_curves/model_20m_tok_50000000_train_curve.png`  
+
+  ![Figure 6. Training curve for `model_20m_tok_50000000`](figures/training_curves/model_20m_tok_50000000_train_curve.png)
 
 ### Supplementary Training Curves
 
@@ -414,8 +426,19 @@ A practical interpretation of the fitted trends is:
 ### Relation to the Figures
 
 - **Figure 7** shows that the parameter-only fit is weak and that the runs do not collapse cleanly to a single curve when token budget varies.
+  **Figure file:** `reports/figures/loss_vs_params.png`
+
+  ![Figure 7. loss_vs_params](figures/loss_vs_params.png)
+
 - **Figure 8** shows the clearest power-law behavior, with loss decreasing consistently as training tokens increase.
+  **Figure file:** `reports/figures/loss_vs_tokens.png`
+
+  ![Figure 8. loss_vs_tokens](figures/loss_vs_tokens.png)
+
 - **Figure 9** shows a similarly strong compute trend, though slightly noisier than the token-based fit.
+  **Figure file:** `reports/figures/loss_vs_flops.png`
+
+  ![Figure 9. loss_vs_flops](figures/loss_vs_flops.png)
 
 ### Scope of the Fitting
 
@@ -484,6 +507,9 @@ The empirical frontier supports a Chinchilla-style interpretation of the sweep: 
 ### Relation to the Figure
 
 **Figure 10** shows the empirical compute frontier in FLOPs-loss space. The frontier traces the best observed validation loss reachable at increasing compute budgets and highlights which runs are dominated and which are compute-optimal within the experimental grid.
+**Figure file:** `reports/figures/compute_frontier.png`
+
+![Figure 10. compute_frontier](figures/compute_frontier.png)
 
 
 ### Figure and Table

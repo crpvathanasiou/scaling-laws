@@ -72,9 +72,9 @@ A practical interpretation of the fitted trends is:
 
 ### Relation to the Figures
 
-- **Figure X** (`loss_vs_params.png`) shows that the parameter-only fit is weak and that the runs do not collapse cleanly to a single curve when token budget varies.
-- **Figure Y** (`loss_vs_tokens.png`) shows the clearest power-law behavior, with loss decreasing consistently as training tokens increase.
-- **Figure Z** (`loss_vs_flops.png`) shows a similarly strong compute trend, though slightly noisier than the token-based fit.
+- **Figure** (`loss_vs_params.png`) shows that the parameter-only fit is weak and that the runs do not collapse cleanly to a single curve when token budget varies.
+- **Figure** (`loss_vs_tokens.png`) shows the clearest power-law behavior, with loss decreasing consistently as training tokens increase.
+- **Figure** (`loss_vs_flops.png`) shows a similarly strong compute trend, though slightly noisier than the token-based fit.
 
 ### Scope of the Fitting
 
