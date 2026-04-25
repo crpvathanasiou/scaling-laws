@@ -6,13 +6,12 @@ Operational guide for running the Greek scaling-laws pipeline end-to-end.
 
 ## 1. Environment setup
 
-Create and activate the project environment, then install dependencies.
+Install the project dependencies from the lock file.
 
 ### Windows PowerShell
 
 ```powershell
 poetry install
-poetry shell
 ````
 
 ### Verify GPU
@@ -26,6 +25,8 @@ python -c "import torch; print('CUDA Available:', torch.cuda.is_available()); pr
 * A CUDA-capable GPU is recommended for model training and sweeps.
 * Tokenizer training, data preparation, and analysis stages can run on CPU.
 * If Hugging Face downloads are slow, configure `HF_TOKEN` locally.
+* Run the pipeline from an environment where the project Python dependencies are already available.
+* The root run_all.ps1 and run_all.sh scripts also call poetry install to ensure dependencies from poetry.lock are present.
 
 ---
 

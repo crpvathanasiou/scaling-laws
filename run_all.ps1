@@ -14,6 +14,12 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $RepoRoot
 
+Write-Host "Installing dependencies from poetry.lock..."
+poetry install --no-interaction
+if ($LASTEXITCODE -ne 0) {
+    throw "poetry install failed with exit code $LASTEXITCODE."
+}
+
 if (Test-Path ".\results\results.csv") {
     Remove-Item ".\results\results.csv" -Force
     Write-Host "Removed existing runtime file: .\results\results.csv"

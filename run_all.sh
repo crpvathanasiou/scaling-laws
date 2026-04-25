@@ -13,6 +13,9 @@ SKIP_TRAINING_CURVES="${SKIP_TRAINING_CURVES:-0}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$REPO_ROOT"
 
+echo "Installing dependencies from poetry.lock..."
+poetry install --no-interaction
+
 if [ -f ./results/results.csv ]; then
   rm -f ./results/results.csv
   echo "Removed existing runtime file: ./results/results.csv"
