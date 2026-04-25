@@ -20,6 +20,19 @@ if ($LASTEXITCODE -ne 0) {
     throw "poetry install failed with exit code $LASTEXITCODE."
 }
 
+$PoetryEnvPath = poetry env info --path
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($PoetryEnvPath)) {
+    throw "Failed to resolve Poetry virtual environment path."
+}
+
+$ActivateScript = Join-Path $PoetryEnvPath "Scripts\Activate.ps1"
+if (-not (Test-Path $ActivateScript)) {
+    throw "Poetry activation script not found at: $ActivateScript"
+}
+
+Write-Host "Activating Poetry environment: $PoetryEnvPath"
+. $ActivateScript
+
 if (Test-Path ".\results\results.csv") {
     Remove-Item ".\results\results.csv" -Force
     Write-Host "Removed existing runtime file: .\results\results.csv"

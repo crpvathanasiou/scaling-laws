@@ -16,6 +16,22 @@ cd "$REPO_ROOT"
 echo "Installing dependencies from poetry.lock..."
 poetry install --no-interaction
 
+POETRY_ENV_PATH="$(poetry env info --path)"
+if [ -z "$POETRY_ENV_PATH" ]; then
+  echo "Failed to resolve Poetry virtual environment path."
+  exit 1
+fi
+
+ACTIVATE_SCRIPT="$POETRY_ENV_PATH/bin/activate"
+if [ ! -f "$ACTIVATE_SCRIPT" ]; then
+  echo "Poetry activation script not found at: $ACTIVATE_SCRIPT"
+  exit 1
+fi
+
+echo "Activating Poetry environment: $POETRY_ENV_PATH"
+# shellcheck disable=SC1090
+source "$ACTIVATE_SCRIPT"
+
 if [ -f ./results/results.csv ]; then
   rm -f ./results/results.csv
   echo "Removed existing runtime file: ./results/results.csv"
